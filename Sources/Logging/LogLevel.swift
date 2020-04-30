@@ -1,6 +1,6 @@
 //
-//  LoggingTests.swift
-//  LoggingTests
+//  LogLevel.swift
+//  Logging
 //
 //  Copyright (c) 2020 Anodized Software, Inc.
 //
@@ -23,39 +23,59 @@
 //  DEALINGS IN THE SOFTWARE.
 //
 
-import XCTest
-import Logging
+import CocoaLumberjackSwift
+import Foundation
 
-enum Context: String, LogContext {
+public enum LogLevel: Int, Comparable, Equatable {
     
-    static let defaultContext: Context = .default
-
-    case `default`
+    case verbose
+    case debug
+    case info
+    case warning
+    case error
     
-    case test
+    public static func < (lhs: LogLevel, rhs: LogLevel) -> Bool {
+        return lhs.rawValue < rhs.rawValue
+    }
 }
 
-final class LoggingTests: XCTestCase {
+internal extension LogLevel {
     
-    func testExample() {
-        let log = LogService<Context>()
-        log.setMinimumLogLevel(.warning)
-        log.test.minimumLogLevel = .info
-        
-        log.default.error("Error message")
-        log.default.warn("Warn message")
-        log.default.info("Info message")
-        log.default.debug("Debug message")
-        log.default.verbose("Verbose message")
-        
-        log.test.error("Error message")
-        log.test.warn("Warn message")
-        log.test.info("Info message")
-        log.test.debug("Debug message")
-        log.test.verbose("Verbose message")
+    var ddLogLevel: DDLogLevel {
+        switch self {
+        case .verbose:
+            return .verbose
+            
+        case .debug:
+            return .debug
+            
+        case .info:
+            return .info
+            
+        case .warning:
+            return .warning
+            
+        case .error:
+            return .error
+        }
     }
-
-    static var allTests = [
-        ("testExample", testExample),
-    ]
+    
+    var ddLogFlag: DDLogFlag {
+        switch self {
+        case .verbose:
+            return .verbose
+            
+        case .debug:
+            return .debug
+            
+        case .info:
+            return .info
+            
+        case .warning:
+            return .warning
+            
+        case .error:
+            return .error
+        }
+    }
 }

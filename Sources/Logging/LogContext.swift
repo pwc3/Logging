@@ -1,6 +1,6 @@
 //
-//  LoggingTests.swift
-//  LoggingTests
+//  LogContext.swift
+//  Logging
 //
 //  Copyright (c) 2020 Anodized Software, Inc.
 //
@@ -23,39 +23,24 @@
 //  DEALINGS IN THE SOFTWARE.
 //
 
-import XCTest
-import Logging
+import Foundation
 
-enum Context: String, LogContext {
+public protocol LogContext: CaseIterable, Hashable, ExpressibleByStringLiteral, RawRepresentable where RawValue == String {
     
-    static let defaultContext: Context = .default
-
-    case `default`
-    
-    case test
+    static var defaultContext: Self { get }
 }
 
-final class LoggingTests: XCTestCase {
+extension LogContext {
     
-    func testExample() {
-        let log = LogService<Context>()
-        log.setMinimumLogLevel(.warning)
-        log.test.minimumLogLevel = .info
-        
-        log.default.error("Error message")
-        log.default.warn("Warn message")
-        log.default.info("Info message")
-        log.default.debug("Debug message")
-        log.default.verbose("Verbose message")
-        
-        log.test.error("Error message")
-        log.test.warn("Warn message")
-        log.test.info("Info message")
-        log.test.debug("Debug message")
-        log.test.verbose("Verbose message")
+    public init(stringLiteral value: String) {
+        self.init(rawValue: value)!
+    }
+    
+    static func at(index: Int) -> Self {
+        return allCases[index as! Self.AllCases.Index]
     }
 
-    static var allTests = [
-        ("testExample", testExample),
-    ]
+    var index: Int {
+        return Self.allCases.firstIndex(of: self) as! Int
+    }
 }

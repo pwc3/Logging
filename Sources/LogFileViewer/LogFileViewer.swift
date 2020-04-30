@@ -1,6 +1,6 @@
 //
-//  LoggingTests.swift
-//  LoggingTests
+//  LogFileViewer.swift
+//  LogFileViewer
 //
 //  Copyright (c) 2020 Anodized Software, Inc.
 //
@@ -23,39 +23,16 @@
 //  DEALINGS IN THE SOFTWARE.
 //
 
-import XCTest
 import Logging
+import UIKit
 
-enum Context: String, LogContext {
-    
-    static let defaultContext: Context = .default
-
-    case `default`
-    
-    case test
-}
-
-final class LoggingTests: XCTestCase {
-    
-    func testExample() {
-        let log = LogService<Context>()
-        log.setMinimumLogLevel(.warning)
-        log.test.minimumLogLevel = .info
-        
-        log.default.error("Error message")
-        log.default.warn("Warn message")
-        log.default.info("Info message")
-        log.default.debug("Debug message")
-        log.default.verbose("Verbose message")
-        
-        log.test.error("Error message")
-        log.test.warn("Warn message")
-        log.test.info("Info message")
-        log.test.debug("Debug message")
-        log.test.verbose("Verbose message")
+public func LogFileViewer<Context>(service: LogService<Context>) -> UIViewController? where Context: LogContext {
+    guard service.fileLogger != nil else {
+        print("Cannot create LogFileViewer: no file logger is configured on the service")
+        return nil
     }
-
-    static var allTests = [
-        ("testExample", testExample),
-    ]
+    
+    let vc = LogFileListViewController(logService: service)
+    let nc = UINavigationController(rootViewController: vc)
+    return nc
 }
