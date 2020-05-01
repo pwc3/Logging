@@ -32,11 +32,11 @@ class LogFileViewController: UIViewController {
 
     let contents: String
 
-    let path: String
+    let source: URL
 
-    init(contents: String, path: String) {
+    init(contents: String, source: URL) {
         self.contents = contents
-        self.path = path
+        self.source = source
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -74,8 +74,7 @@ class LogFileViewController: UIViewController {
     }
 
     @objc private func actionButtonTapped() {
-        let url = URL(fileURLWithPath: path)
-        let vc = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+        let vc = UIActivityViewController(activityItems: [source], applicationActivities: nil)
         present(vc, animated: true)
     }
 }

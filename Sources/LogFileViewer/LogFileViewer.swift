@@ -23,16 +23,10 @@
 //  DEALINGS IN THE SOFTWARE.
 //
 
-import Logging
 import UIKit
 
-public func LogFileViewer<Context>(service: LogService<Context>) -> UIViewController? where Context: LogContext {
-    guard service.isFileLogDestinationConfigured else {
-        print("Cannot create LogFileViewer: file log destination is not configured on the service")
-        return nil
-    }
-    
-    let vc = LogFileListViewController(logService: service)
+public func LogFileViewer(logsDirectory: String) -> UIViewController? {
+    let vc = LogFileListViewController(logsDirectory: URL(fileURLWithPath: logsDirectory))
     let nc = UINavigationController(rootViewController: vc)
     return nc
 }

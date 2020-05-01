@@ -1,5 +1,5 @@
 //
-//  LogContext.swift
+//  Level.swift
 //  Logging
 //
 //  Copyright (c) 2020 Anodized Software, Inc.
@@ -25,21 +25,19 @@
 
 import Foundation
 
-public protocol LogContext: CaseIterable, Hashable, RawRepresentable where RawValue == String {
-
-}
-
-extension LogContext {
+public enum Level: Int, Comparable, Equatable {
     
-    public init(stringLiteral value: String) {
-        self.init(rawValue: value)!
-    }
+    case verbose
 
-    static func at(index: Int) -> Self {
-        return allCases[index as! Self.AllCases.Index]
-    }
+    case debug
 
-    var index: Int {
-        return Self.allCases.firstIndex(of: self) as! Int
+    case info
+
+    case warning
+
+    case error
+    
+    public static func < (lhs: Level, rhs: Level) -> Bool {
+        return lhs.rawValue < rhs.rawValue
     }
 }

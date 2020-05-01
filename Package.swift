@@ -36,6 +36,10 @@ let package = Package(
             name: "Logging",
             targets: ["Logging"]),
         .library(
+            name: "CocoaLumberjackFileLogging",
+            targets: ["CocoaLumberjackFileLogging"]
+        ),
+        .library(
             name: "LogFileViewer",
             targets: ["LogFileViewer"]),
     ],
@@ -47,6 +51,9 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages which this package depends on.
         .target(
             name: "Logging",
+            dependencies: []),
+        .target(
+            name: "CocoaLumberjackFileLogging",
             dependencies: [
                 .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack")
             ]),
@@ -57,6 +64,9 @@ let package = Package(
             ]),
         .testTarget(
             name: "LoggingTests",
-            dependencies: ["Logging"]),
+            dependencies: [
+                "Logging",
+                "CocoaLumberjackFileLogging"
+            ]),
     ]
 )
