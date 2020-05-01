@@ -45,8 +45,8 @@ class LogFileCell: UITableViewCell {
         accessoryType = .disclosureIndicator
     }
 
-    func configure(forPath path: String) {
-        pathLabel.text = (path as NSString).lastPathComponent
+    func configure(for url: URL) {
+        pathLabel.text = url.lastPathComponent
     }
 
     required init?(coder: NSCoder) {

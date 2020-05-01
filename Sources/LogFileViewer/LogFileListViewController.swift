@@ -23,19 +23,18 @@
 //  DEALINGS IN THE SOFTWARE.
 //
 
-import Logging
 import UIKit
 
-class LogFileListViewController<Context>: UITableViewController where Context: LogContext {
+class LogFileListViewController: UITableViewController {
     
-    private let logService: LogService<Context>
+    private let logsDirectory: URL
 
-    private var logFilePaths: [String] = []
+    private var logFiles: [URL] = []
 
     private let reuseIdentifier = "cell"
     
-    init(logService: LogService<Context>) {
-        self.logService = logService
+    init(logsDirectory: URL) {
+        self.logsDirectory = logsDirectory
         super.init(style: .plain)
     }
     
@@ -102,14 +101,34 @@ class LogFileListViewController<Context>: UITableViewController where Context: L
         navigationController.map { showSpinner(in: $0.view) }
 
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            let paths = self?.logService.sortedLogFilePaths ?? []
+            let urls = self?.loadLogFileURLs() ?? []
 
             DispatchQueue.main.async {
                 self?.hideSpinner()
 
-                self?.logFilePaths = paths
+                self?.logFiles = urls
                 self?.tableView.reloadData()
             }
+        }
+    }
+
+    private func loadLogFileURLs() -> [URL]? {
+        do {
+            let files = try FileManager.default.contentsOfDirectory(
+                at: logsDirectory,
+                includingPropertiesForKeys: [.creationDateKey],
+                options: [.skipsSubdirectoryDescendants, .skipsPackageDescendants])
+
+            return try files.sorted(by: { (u1, u2) -> Bool in
+                let d1 = try u1.resourceValues(forKeys: [.creationDateKey]).creationDate ?? Date.distantPast
+                let d2 = try u2.resourceValues(forKeys: [.creationDateKey]).creationDate ?? Date.distantPast
+
+                return d2 < d1
+            })
+        }
+        catch {
+            NSLog("Error loading log file paths: \(error)")
+            return nil
         }
     }
 
@@ -120,7 +139,7 @@ class LogFileListViewController<Context>: UITableViewController where Context: L
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return logFilePaths.count
+        return logFiles.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -128,30 +147,30 @@ class LogFileListViewController<Context>: UITableViewController where Context: L
             fatalError("Could not dequeue expected cell type")
         }
 
-        cell.configure(forPath: logFilePaths[indexPath.row])
+        cell.configure(for: logFiles[indexPath.row])
         return cell
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let path = logFilePaths[indexPath.row]
+        let url = logFiles[indexPath.row]
         navigationController.map { showSpinner(in: $0.view) }
 
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             let result = Result(catching: {
-                try String(contentsOfFile: path)
+                try String(contentsOf: url)
             })
 
             DispatchQueue.main.async {
                 self?.hideSpinner()
-                self?.showLogFileContents(result, fromPath: path)
+                self?.showLogFileContents(result, from: url)
             }
         }
     }
 
-    private func showLogFileContents(_ result: Result<String, Error>, fromPath path: String) {
+    private func showLogFileContents(_ result: Result<String, Error>, from url: URL) {
         switch result {
         case .success(let contents):
-            let vc = LogFileViewController(contents: contents, path: path)
+            let vc = LogFileViewController(contents: contents, source: url)
             navigationController?.pushViewController(vc, animated: true)
 
         case .failure(let error):

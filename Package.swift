@@ -39,9 +39,9 @@ let package = Package(
             name: "CocoaLumberjackFileLogging",
             targets: ["CocoaLumberjackFileLogging"]
         ),
-//        .library(
-//            name: "LogFileViewer",
-//            targets: ["LogFileViewer"]),
+        .library(
+            name: "LogFileViewer",
+            targets: ["LogFileViewer"]),
     ],
     dependencies: [
         .package(url: "https://github.com/CocoaLumberjack/CocoaLumberjack", .branch("master")),
@@ -57,11 +57,11 @@ let package = Package(
             dependencies: [
                 .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack")
             ]),
-//        .target(
-//            name: "LogFileViewer",
-//            dependencies: [
-//                "Logging",
-//            ]),
+        .target(
+            name: "LogFileViewer",
+            dependencies: [
+                "Logging",
+            ]),
         .testTarget(
             name: "LoggingTests",
             dependencies: [
