@@ -23,7 +23,7 @@
 //  DEALINGS IN THE SOFTWARE.
 //
 
-import FileLogging
+import CocoaLumberjackFileLogging
 import Logging
 import XCTest
 
