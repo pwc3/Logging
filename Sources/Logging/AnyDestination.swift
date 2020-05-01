@@ -11,7 +11,7 @@ class AnyDestination<Category>: Destination {
 
     private let _log: (Message<Category>) -> Void
 
-    init<D>(_ destination: D) where D: Destination, D.Category == Category {
+    init<D>(destination: D) where D: Destination, D.Category == Category {
         _log = destination.log
     }
 

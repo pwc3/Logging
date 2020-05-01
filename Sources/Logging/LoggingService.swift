@@ -26,7 +26,11 @@ public class LoggingService<Category>
     }
 
     public func add<DestinationType>(destination: DestinationType) where DestinationType: Destination, DestinationType.Category == Category {
-        destinations.append(AnyDestination(destination))
+        destinations.append(AnyDestination(destination: destination))
+    }
+
+    public func add<DestinationType>(fileDestination: DestinationType) where DestinationType: FileDestination, DestinationType.Category == Category {
+        destinations.append(AnyFileDestination(fileDestination: fileDestination))
     }
 
     public func setMinimumLevel(_ level: Level) {
