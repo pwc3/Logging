@@ -26,62 +26,74 @@
 import CocoaLumberjackSwift
 import Foundation
 
-public class Logger<Context> where Context: LogContext {
+public class Logger<Category> where Category: CaseIterable & Hashable & RawRepresentable, Category.RawValue == String {
 
-    let context: Context
-    
+    internal unowned let parent: LoggingService<Category>
+
+    public let category: Category
+
     public var isEnabled = true
     
-    public var minimumLogLevel: LogLevel = .verbose
+    public var minimumLevel: Level = .verbose
 
-    init(context: Context) {
-        self.context = context
-    }
-    
-    public func log(_ level: LogLevel, _ message: @autoclosure () -> String, file: StaticString = #file, function: StaticString = #function, line: UInt = #line, asynchronous: Bool = true) {
-        logMessage(message: message(), level: level, file: file, function: function, line: line, asynchronous: asynchronous)
+    init(parent: LoggingService<Category>, category: Category) {
+        self.parent = parent
+        self.category = category
     }
 
-    public func debug(_ message: @autoclosure () -> String, file: StaticString = #file, function: StaticString = #function, line: UInt = #line, asynchronous: Bool = true) {
-        logMessage(message: message(), level: .debug, file: file, function: function, line: line, asynchronous: asynchronous)
+    public func verbose(_ message: @autoclosure () -> String,
+                        file: StaticString = #file,
+                        function: StaticString = #function,
+                        line: UInt = #line) {
+        log(message: message, level: .verbose, file: file, function: function, line: line)
     }
 
-    public func info(_ message: @autoclosure () -> String, file: StaticString = #file, function: StaticString = #function, line: UInt = #line, asynchronous: Bool = true) {
-        logMessage(message: message(), level: .info, file: file, function: function, line: line, asynchronous: asynchronous)
+    public func debug(_ message: @autoclosure () -> String,
+                      file: StaticString = #file,
+                      function: StaticString = #function,
+                      line: UInt = #line) {
+        log(message: message, level: .debug, file: file, function: function, line: line)
     }
 
-    public func warn(_ message: @autoclosure () -> String, file: StaticString = #file, function: StaticString = #function, line: UInt = #line, asynchronous: Bool = true) {
-        logMessage(message: message(), level: .warning, file: file, function: function, line: line, asynchronous: asynchronous)
+    public func info(_ message: @autoclosure () -> String,
+                     file: StaticString = #file,
+                     function: StaticString = #function,
+                     line: UInt = #line) {
+        log(message: message, level: .info, file: file, function: function, line: line)
     }
 
-    public func verbose(_ message: @autoclosure () -> String, file: StaticString = #file, function: StaticString = #function, line: UInt = #line, asynchronous: Bool = true) {
-        logMessage(message: message(), level: .verbose, file: file, function: function, line: line, asynchronous: asynchronous)
+    public func warn(_ message: @autoclosure () -> String,
+                     file: StaticString = #file,
+                     function: StaticString = #function,
+                     line: UInt = #line) {
+        log(message: message, level: .warning, file: file, function: function, line: line)
     }
 
-    public func error(_ message: @autoclosure () -> String, file: StaticString = #file, function: StaticString = #function, line: UInt = #line, asynchronous: Bool = true) {
-        logMessage(message: message(), level: .error, file: file, function: function, line: line, asynchronous: asynchronous)
+
+    public func error(_ message: @autoclosure () -> String,
+                      file: StaticString = #file,
+                      function: StaticString = #function,
+                      line: UInt = #line) {
+        log(message: message, level: .error, file: file, function: function, line: line)
     }
 
-    private func logMessage(message: @autoclosure () -> String,
-                            level: LogLevel,
-                            file: StaticString,
-                            function: StaticString,
-                            line: UInt,
-                            asynchronous: Bool) {
+    private func log(message: () -> String,
+                     level: Level,
+                     file: StaticString,
+                     function: StaticString,
+                     line: UInt) {
 
-        guard isEnabled, level >= minimumLogLevel else {
+        guard isEnabled, level >= minimumLevel else {
             return
         }
-        
-        _DDLogMessage(message(),
-                      level: level.ddLogLevel,
-                      flag: level.ddLogFlag,
-                      context: context.index,
-                      file: file,
-                      function: function,
-                      line: line,
-                      tag: nil,
-                      asynchronous: asynchronous,
-                      ddlog: DDLog.sharedInstance)
+
+        let message = Message(timestamp: Date(),
+                              message: message(),
+                              level: level,
+                              category: category,
+                              file: file,
+                              function: function,
+                              line: line)
+        parent.log(message)
     }
 }
