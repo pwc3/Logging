@@ -1,5 +1,5 @@
 //
-//  DefaultLogger.swift
+//  Logger.swift
 //  Logging
 //
 //  Copyright (c) 2020 Anodized Software, Inc.

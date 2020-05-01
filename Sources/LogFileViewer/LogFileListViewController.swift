@@ -1,6 +1,6 @@
 //
 //  LogFileListViewController.swift
-//  LogViewer
+//  LogFileViewer
 //
 //  Copyright (c) 2020 Anodized Software, Inc.
 //
