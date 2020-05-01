@@ -21,6 +21,12 @@ class AnyFileDestination<Category>: AnyDestination<Category>, FileDestination {
     private let getLogFilesDiskQuota: () -> UInt64
     private let setLogFilesDiskQuota: (UInt64) -> Void
 
+    private let getLogsDirectory: () -> String
+
+    private let getLogFilePaths: () -> [String]
+
+    private let _rollLogFile: () -> Void
+
     init<D>(fileDestination: D) where D: FileDestination, D.Category == Category {
         getMaximumFileSize = {
             fileDestination.maximumFileSize
@@ -52,6 +58,18 @@ class AnyFileDestination<Category>: AnyDestination<Category>, FileDestination {
 
         setLogFilesDiskQuota = {
             fileDestination.logFilesDiskQuota = $0
+        }
+
+        getLogsDirectory = {
+            fileDestination.logsDirectory
+        }
+
+        getLogFilePaths = {
+            fileDestination.logFilePaths
+        }
+
+        _rollLogFile = {
+            fileDestination.rollLogFile()
         }
 
         super.init(destination: fileDestination)
@@ -95,5 +113,17 @@ class AnyFileDestination<Category>: AnyDestination<Category>, FileDestination {
         set {
             setLogFilesDiskQuota(newValue)
         }
+    }
+
+    var logsDirectory: String {
+        return getLogsDirectory()
+    }
+
+    var logFilePaths: [String] {
+        return getLogFilePaths()
+    }
+
+    func rollLogFile() {
+        _rollLogFile()
     }
 }

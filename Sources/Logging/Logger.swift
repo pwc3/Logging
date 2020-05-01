@@ -23,7 +23,6 @@
 //  DEALINGS IN THE SOFTWARE.
 //
 
-import CocoaLumberjackSwift
 import Foundation
 
 public class Logger<Category> where Category: CaseIterable & Hashable & RawRepresentable, Category.RawValue == String {

@@ -23,8 +23,9 @@
 //  DEALINGS IN THE SOFTWARE.
 //
 
-import XCTest
+import FileLogging
 import Logging
+import XCTest
 
 enum Category: String, CaseIterable {
 
@@ -36,8 +37,12 @@ enum Category: String, CaseIterable {
 final class LoggingTests: XCTestCase {
     
     func testExample() {
+        let fileDestination = CocoaLumberjackFileDestination<Category>()
+        print("Logs directory: \(fileDestination.logsDirectory)")
+
         let log = LoggingService<Category>()
         log.add(destination: NSLogDestination())
+        log.add(fileDestination: fileDestination)
 
         log.setMinimumLevel(.warning)
         log[.test].minimumLevel = .info

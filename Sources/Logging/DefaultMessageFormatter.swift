@@ -25,7 +25,7 @@ public class DefaultMessageFormatter<Category>: MessageFormatter<Category> where
                 ? "[\(message.category)]"
                 : nil,
             includeTimestamp
-                ? dateFormatterForCurrentThread().string(from: message.timestamp)
+                ? dateFormatterForCurrentThread.string(from: message.timestamp)
                 : nil,
             String(format: "(%@:%d)", NSString(stringLiteral: message.file).lastPathComponent, message.line),
             message.message

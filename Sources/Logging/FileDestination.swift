@@ -16,4 +16,10 @@ public protocol FileDestination: AnyObject, Destination {
     var maximumNumberOfLogFiles: UInt { get set }
 
     var logFilesDiskQuota: UInt64 { get set }
+
+    var logsDirectory: String { get }
+
+    var logFilePaths: [String] { get }
+
+    func rollLogFile()
 }

@@ -9,9 +9,9 @@ import Foundation
 
 open class MessageFormatter<Category> {
 
-    private let threadDateFormatterKey: NSString = "LogFormatter.dateFormatter"
+    private let threadDateFormatterKey: NSString = "Logging.MessageFormatter.dateFormatter"
 
-    public func dateFormatterForCurrentThread() -> DateFormatter {
+    open var dateFormatterForCurrentThread: DateFormatter {
         let threadDictionary = Thread.current.threadDictionary
 
         if let df: DateFormatter = threadDictionary.object(forKey: threadDateFormatterKey) as? DateFormatter {
@@ -27,7 +27,7 @@ open class MessageFormatter<Category> {
         }
     }
 
-    func format(_ message: Message<Category>) -> String {
+    open func format(_ message: Message<Category>) -> String {
         return message.message
     }
 }

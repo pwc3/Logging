@@ -23,7 +23,6 @@
 //  DEALINGS IN THE SOFTWARE.
 //
 
-import CocoaLumberjackSwift
 import Foundation
 
 public enum Level: Int, Comparable, Equatable {
