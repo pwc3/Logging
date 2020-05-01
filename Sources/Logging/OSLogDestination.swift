@@ -15,7 +15,7 @@ public class OSLogDestination<Category>: Destination where Category: Hashable & 
     private let loggers: [Category: OSLog]
 
     public init(subsystem: String,
-                formatter: MessageFormatter<Category> = DefaultMessageFormatter<Category>(includeTimestamp: false, includeCategory: false)) {
+                formatter: MessageFormatter<Category> = DefaultMessageFormatter(includeTimestamp: false, includeCategory: false)) {
 
         self.formatter = formatter
 

@@ -37,7 +37,7 @@ final class LoggingTests: XCTestCase {
     
     func testExample() {
         let log = LoggingService<Category>()
-        log.add(destination: OSLogDestination(subsystem: "LoggingTests"))
+        log.add(destination: NSLogDestination())
 
         log.setMinimumLevel(.warning)
         log[.test].minimumLevel = .info
