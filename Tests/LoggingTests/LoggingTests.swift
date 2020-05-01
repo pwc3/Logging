@@ -27,10 +27,8 @@ import XCTest
 import Logging
 
 enum Context: String, LogContext {
-    
-    static let defaultContext: Context = .default
 
-    case `default`
+    case app
     
     case test
 }
@@ -42,11 +40,11 @@ final class LoggingTests: XCTestCase {
         log.setMinimumLogLevel(.warning)
         log[.test].minimumLogLevel = .info
 
-        log[.default].error("Error message")
-        log[.default].warn("Warn message")
-        log[.default].info("Info message")
-        log[.default].debug("Debug message")
-        log[.default].verbose("Verbose message")
+        log[.app].error("Error message")
+        log[.app].warn("Warn message")
+        log[.app].info("Info message")
+        log[.app].debug("Debug message")
+        log[.app].verbose("Verbose message")
         
         log[.test].error("Error message")
         log[.test].warn("Warn message")

@@ -27,7 +27,6 @@ import Foundation
 
 public protocol LogContext: CaseIterable, Hashable, RawRepresentable where RawValue == String {
 
-    static var defaultContext: Self { get }
 }
 
 extension LogContext {
@@ -35,7 +34,7 @@ extension LogContext {
     public init(stringLiteral value: String) {
         self.init(rawValue: value)!
     }
-    
+
     static func at(index: Int) -> Self {
         return allCases[index as! Self.AllCases.Index]
     }
