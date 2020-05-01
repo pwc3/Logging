@@ -25,8 +25,8 @@
 
 import Foundation
 
-public protocol LogContext: CaseIterable, Hashable, ExpressibleByStringLiteral, RawRepresentable where RawValue == String {
-    
+public protocol LogContext: CaseIterable, Hashable, RawRepresentable where RawValue == String {
+
     static var defaultContext: Self { get }
 }
 

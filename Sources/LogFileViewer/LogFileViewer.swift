@@ -27,8 +27,8 @@ import Logging
 import UIKit
 
 public func LogFileViewer<Context>(service: LogService<Context>) -> UIViewController? where Context: LogContext {
-    guard service.fileLogger != nil else {
-        print("Cannot create LogFileViewer: no file logger is configured on the service")
+    guard service.isFileLogDestinationConfigured else {
+        print("Cannot create LogFileViewer: file log destination is not configured on the service")
         return nil
     }
     

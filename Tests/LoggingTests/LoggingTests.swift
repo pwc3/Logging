@@ -40,19 +40,19 @@ final class LoggingTests: XCTestCase {
     func testExample() {
         let log = LogService<Context>()
         log.setMinimumLogLevel(.warning)
-        log.test.minimumLogLevel = .info
+        log[.test].minimumLogLevel = .info
+
+        log[.default].error("Error message")
+        log[.default].warn("Warn message")
+        log[.default].info("Info message")
+        log[.default].debug("Debug message")
+        log[.default].verbose("Verbose message")
         
-        log.default.error("Error message")
-        log.default.warn("Warn message")
-        log.default.info("Info message")
-        log.default.debug("Debug message")
-        log.default.verbose("Verbose message")
-        
-        log.test.error("Error message")
-        log.test.warn("Warn message")
-        log.test.info("Info message")
-        log.test.debug("Debug message")
-        log.test.verbose("Verbose message")
+        log[.test].error("Error message")
+        log[.test].warn("Warn message")
+        log[.test].info("Info message")
+        log[.test].debug("Debug message")
+        log[.test].verbose("Verbose message")
     }
 
     static var allTests = [

@@ -26,85 +26,132 @@
 import CocoaLumberjackSwift
 import Foundation
 
-@dynamicMemberLookup
 public class LogService<Context> where Context: LogContext {
-    
-    public enum Destination: Hashable {
-        
-        case os(LogFormatter<Context>)
-        
-        case file(LogFormatter<Context>)
+
+    public enum OSLoggingConfiguration {
+
+        case `default`(formatter: LogFormatter<Context>)
+
+        case custom(formatter: LogFormatter<Context>, subsystem: String, category: String)
+    }
+
+    public struct FileLoggingConfiguration {
+
+        public var formatter: LogFormatter<Context>
+
+        public var maxFileSize: UInt64
+
+        public var rollingFrequency: TimeInterval
+
+        public var maxNumberOfLogFiles: UInt
+
+        public var logFilesDiskQuota: UInt64
+
+        public init(formatter: LogFormatter<Context> = LogFormatter(includeTimestamp: true),
+                    maxFileSize: UInt64 = kDDDefaultLogMaxFileSize,
+                    rollingFrequency: TimeInterval = kDDDefaultLogRollingFrequency,
+                    maxNumberOfLogFiles: UInt = kDDDefaultLogMaxNumLogFiles,
+                    logFilesDiskQuota: UInt64 = kDDDefaultLogFilesDiskQuota) {
+
+            self.formatter = formatter
+            self.maxFileSize = maxFileSize
+            self.rollingFrequency = rollingFrequency
+            self.maxNumberOfLogFiles = maxNumberOfLogFiles
+            self.logFilesDiskQuota = logFilesDiskQuota
+        }
     }
     
-    public enum Option: Hashable {
-        
-        case fileRollingFrequency(TimeInterval)
-        
-        case maximumNumberOfLogFiles(UInt)
+    private let osLogger: DDOSLogger?
+
+    public var isOSLogDestinationCofigured: Bool {
+        return osLogger != nil
+    }
+
+    private let fileLogger: DDFileLogger?
+
+    public var isFileLogDestinationConfigured: Bool {
+        return fileLogger != nil
     }
     
-    public private(set) var osLogger: DDOSLogger?
+    private let perContextLoggers: [Context: Logger<Context>]
 
-    public private(set) var fileLogger: DDFileLogger?
-    
-    private let loggers: [Context: Logger<Context>]
-    
-    public init(destinations: Set<Destination> = [.os(LogFormatter<Context>(includeTimestamp: false))],
-                options: Set<Option> = []) {
-        
-        for d in destinations {
-            switch d {
+    public init(osLogDestination: OSLoggingConfiguration? = .default(formatter: LogFormatter(includeTimestamp: false)),
+                fileLogDestination: FileLoggingConfiguration? = nil) {
 
-            case .os(let formatter):
-                let l = DDOSLogger.sharedInstance
-                osLogger = l
-                
-                l.logFormatter = formatter
-                DDLog.add(l)
-                
-            case .file(let formatter):
-                let l = DDFileLogger()
-                fileLogger = l
-                
-                l.logFormatter = formatter
-                DDLog.add(l)
-            }
+        if osLogDestination == nil && fileLogDestination == nil {
+            fatalError("Must specify at least one logging destination")
         }
-        
-        for o in options {
-            switch o {
-            case .fileRollingFrequency(let interval):
-                fileLogger?.rollingFrequency = interval
-                
-            case .maximumNumberOfLogFiles(let count):
-                fileLogger?.logFileManager.maximumNumberOfLogFiles = count
+
+        if let os = osLogDestination {
+            let osLogger: DDOSLogger
+
+            switch os {
+            case .default(let formatter):
+                osLogger = DDOSLogger(subsystem: nil, category: nil)
+                osLogger.logFormatter = formatter
+
+            case .custom(let formatter, let subsystem, let category):
+                osLogger = DDOSLogger(subsystem: subsystem, category: category)
+                osLogger.logFormatter = formatter
             }
+
+            DDLog.add(osLogger)
+            self.osLogger = osLogger
         }
-        
+        else {
+            osLogger = nil
+        }
+
+        if let file = fileLogDestination {
+            let fileLogger = DDFileLogger()
+            fileLogger.maximumFileSize = file.maxFileSize
+            fileLogger.rollingFrequency = file.rollingFrequency
+            fileLogger.logFileManager.maximumNumberOfLogFiles = file.maxNumberOfLogFiles
+            fileLogger.logFileManager.logFilesDiskQuota = file.logFilesDiskQuota
+
+            DDLog.add(fileLogger)
+            self.fileLogger = fileLogger
+        }
+        else {
+            fileLogger = nil
+        }
+
         var loggers = [Context: Logger<Context>]()
         for c in Context.allCases {
             loggers[c] = Logger<Context>(context: c)
         }
-        self.loggers = loggers
+        perContextLoggers = loggers
     }
-    
-    public func rollLogFile(completion: (() -> Void)? = nil) {
-        fileLogger?.rollLogFile(withCompletion: completion)
-    }
-    
-    public subscript(dynamicMember member: Context) -> Logger<Context> {
-        get {
-            guard let logger = loggers[member] else {
-                fatalError("No logger named \(member) found")
-            }
-            
-            return logger
-        }
+
+    public subscript(_ context: Context) -> Logger<Context> {
+        // Okay to force unwrap -- we are guaranteed that every Context value is in the dictionary.
+        return perContextLoggers[context]!
     }
     
     public func setMinimumLogLevel(_ level: LogLevel) {
-        loggers.values.forEach {
+        perContextLoggers.values.forEach {
             $0.minimumLogLevel = level
         }
+    }
+}
+
+// MARK: - File Logger Properties
+
+public extension LogService {
+
+    func rollLogFile(completion: (() -> Void)? = nil) {
+        fileLogger?.rollLogFile(withCompletion: completion)
+    }
+
+    var logsDirectory: String? {
+        return fileLogger?.logFileManager.logsDirectory
+    }
+
+    var unsortedLogFilePaths: [String]? {
+        return fileLogger?.logFileManager.unsortedLogFilePaths
+    }
+
+    var sortedLogFilePaths: [String]? {
+        return fileLogger?.logFileManager.sortedLogFilePaths
     }
 }
