@@ -41,7 +41,6 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/CocoaLumberjack/CocoaLumberjack", .branch("master")),
-        .package(url: "https://github.com/RocketLaunchpad/RIUIKitExtensions", .branch("master"))
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -55,7 +54,6 @@ let package = Package(
             name: "LogFileViewer",
             dependencies: [
                 "Logging",
-                "RIUIKitExtensions"
             ]),
         .testTarget(
             name: "LoggingTests",

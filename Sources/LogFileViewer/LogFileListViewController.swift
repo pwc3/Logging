@@ -24,7 +24,6 @@
 //
 
 import Logging
-import RIUIKitExtensions
 import UIKit
 
 class LogFileListViewController<Context>: UITableViewController where Context: LogContext {
@@ -58,27 +57,57 @@ class LogFileListViewController<Context>: UITableViewController where Context: L
         }
     }
 
-    private var activityIndicator: ActivityIndicator?
+    private var spinner: UIView?
 
-    private func showActivityIndicator() {
-        activityIndicator = ActivityIndicator.add(to: navigationController?.view)
+    private func showSpinner(in parentView: UIView) {
+        let overlay = UIView(frame: parentView.bounds)
+
+        overlay.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        overlay.backgroundColor = UIColor.clear
+
+        let activityIndicator: UIActivityIndicatorView
+        if #available(iOS 13.0, *) {
+            activityIndicator = UIActivityIndicatorView(style: .large)
+            activityIndicator.color = .white
+        } else {
+            activityIndicator = UIActivityIndicatorView(style: .whiteLarge)
+        }
+
+        let margin = CGFloat(30)
+
+        let background = UIView(frame: CGRect(x: 0, y: 0,
+                                              width: activityIndicator.bounds.width + margin * 2,
+                                              height: activityIndicator.bounds.height + margin * 2))
+        background.autoresizingMask = [.flexibleLeftMargin, .flexibleRightMargin,
+                                       .flexibleTopMargin, .flexibleBottomMargin]
+        background.backgroundColor = UIColor(white: 0, alpha: 0.75)
+        background.layer.cornerRadius = 10
+
+        background.addSubview(activityIndicator)
+        activityIndicator.center = background.center
+
+        background.center = overlay.center
+        overlay.addSubview(background)
+
+        parentView.addSubview(overlay)
+        activityIndicator.startAnimating()
     }
 
-    private func hideActivityIndicator() {
-        activityIndicator?.removeFromSuperview()
-        activityIndicator = nil
+    private func hideSpinner() {
+        spinner?.removeFromSuperview()
+        spinner = nil
     }
 
     private func reload() {
-        showActivityIndicator()
+        navigationController.map { showSpinner(in: $0.view) }
 
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            let paths = self?.logService.fileLogger?.logFileManager.sortedLogFilePaths
+            let paths = self?.logService.sortedLogFilePaths ?? []
 
             DispatchQueue.main.async {
-                self?.hideActivityIndicator()
+                self?.hideSpinner()
 
-                self?.logFilePaths = paths ?? []
+                self?.logFilePaths = paths
                 self?.tableView.reloadData()
             }
         }
@@ -105,7 +134,7 @@ class LogFileListViewController<Context>: UITableViewController where Context: L
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let path = logFilePaths[indexPath.row]
-        showActivityIndicator()
+        navigationController.map { showSpinner(in: $0.view) }
 
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             let result = Result(catching: {
@@ -113,7 +142,7 @@ class LogFileListViewController<Context>: UITableViewController where Context: L
             })
 
             DispatchQueue.main.async {
-                self?.hideActivityIndicator()
+                self?.hideSpinner()
                 self?.showLogFileContents(result, fromPath: path)
             }
         }
@@ -126,7 +155,10 @@ class LogFileListViewController<Context>: UITableViewController where Context: L
             navigationController?.pushViewController(vc, animated: true)
 
         case .failure(let error):
-            show(error)
+            let alert = UIAlertController(title: title, message: error.localizedDescription, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: .default))
+
+            present(alert, animated: true)
         }
     }
 }
