@@ -46,91 +46,44 @@ class AnyFileDestination<Category>: AnyDestination<Category>, FileDestination {
     private let _rollLogFile: () -> Void
 
     init<D>(fileDestination: D) where D: FileDestination, D.Category == Category {
-        getMaximumFileSize = {
-            fileDestination.maximumFileSize
-        }
+        getMaximumFileSize = { fileDestination.maximumFileSize }
+        setMaximumFileSize = { fileDestination.maximumFileSize = $0 }
 
-        setMaximumFileSize = {
-            fileDestination.maximumFileSize = $0
-        }
+        getRollingFrequency = { fileDestination.rollingFrequency }
+        setRollingFrequency = { fileDestination.rollingFrequency = $0 }
 
-        getRollingFrequency = {
-            fileDestination.rollingFrequency
-        }
+        getMaximumNumberOfLogFiles = { fileDestination.maximumNumberOfLogFiles }
+        setMaximumNumberOfLogFiles = { fileDestination.maximumNumberOfLogFiles = $0 }
 
-        setRollingFrequency = {
-            fileDestination.rollingFrequency = $0
-        }
+        getLogFilesDiskQuota = { fileDestination.logFilesDiskQuota }
+        setLogFilesDiskQuota = { fileDestination.logFilesDiskQuota = $0 }
 
-        getMaximumNumberOfLogFiles = {
-            fileDestination.maximumNumberOfLogFiles
-        }
+        getLogsDirectory = { fileDestination.logsDirectory }
+        getLogFilePaths = { fileDestination.logFilePaths }
 
-        setMaximumNumberOfLogFiles = {
-            fileDestination.maximumNumberOfLogFiles = $0
-        }
-
-        getLogFilesDiskQuota = {
-            fileDestination.logFilesDiskQuota
-        }
-
-        setLogFilesDiskQuota = {
-            fileDestination.logFilesDiskQuota = $0
-        }
-
-        getLogsDirectory = {
-            fileDestination.logsDirectory
-        }
-
-        getLogFilePaths = {
-            fileDestination.logFilePaths
-        }
-
-        _rollLogFile = {
-            fileDestination.rollLogFile()
-        }
+        _rollLogFile = { fileDestination.rollLogFile() }
 
         super.init(destination: fileDestination)
     }
 
     var maximumFileSize: UInt64 {
-        get {
-            return getMaximumFileSize()
-        }
-
-        set {
-            setMaximumFileSize(newValue)
-        }
+        get { return getMaximumFileSize() }
+        set { setMaximumFileSize(newValue) }
     }
 
     var rollingFrequency: TimeInterval {
-        get {
-            return getRollingFrequency()
-        }
-
-        set {
-            setRollingFrequency(newValue)
-        }
+        get { return getRollingFrequency() }
+        set { setRollingFrequency(newValue) }
     }
 
     var maximumNumberOfLogFiles: UInt {
-        get {
-            return getMaximumNumberOfLogFiles()
-        }
-
-        set {
-            setMaximumNumberOfLogFiles(newValue)
-        }
+        get { return getMaximumNumberOfLogFiles() }
+        set { setMaximumNumberOfLogFiles(newValue) }
     }
 
     var logFilesDiskQuota: UInt64 {
-        get {
-            return getLogFilesDiskQuota()
-        }
-
-        set {
-            setLogFilesDiskQuota(newValue)
-        }
+        get { return getLogFilesDiskQuota() }
+        set { setLogFilesDiskQuota(newValue) }
     }
 
     var logsDirectory: String {
