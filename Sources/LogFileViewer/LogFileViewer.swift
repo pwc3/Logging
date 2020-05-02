@@ -25,7 +25,7 @@
 
 import UIKit
 
-public func LogFileViewer(logsDirectory: String) -> UIViewController? {
+public func LogFileViewer(logsDirectory: String) -> UIViewController {
     let vc = LogFileListViewController(logsDirectory: URL(fileURLWithPath: logsDirectory))
     let nc = UINavigationController(rootViewController: vc)
     return nc
