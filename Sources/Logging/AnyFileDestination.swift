@@ -43,6 +43,8 @@ class AnyFileDestination<Category>: AnyDestination<Category>, FileDestination {
 
     private let getLogFilePaths: () -> [String]
 
+    private let getCurrentLogFilePath: () -> String?
+
     private let _rollLogFile: () -> Void
 
     init<D>(fileDestination: D) where D: FileDestination, D.Category == Category {
@@ -60,6 +62,8 @@ class AnyFileDestination<Category>: AnyDestination<Category>, FileDestination {
 
         getLogsDirectory = { fileDestination.logsDirectory }
         getLogFilePaths = { fileDestination.logFilePaths }
+
+        getCurrentLogFilePath = { fileDestination.currentLogFilePath }
 
         _rollLogFile = { fileDestination.rollLogFile() }
 
@@ -92,6 +96,10 @@ class AnyFileDestination<Category>: AnyDestination<Category>, FileDestination {
 
     var logFilePaths: [String] {
         return getLogFilePaths()
+    }
+    
+    var currentLogFilePath: String? {
+        return getCurrentLogFilePath()
     }
 
     func rollLogFile() {

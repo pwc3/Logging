@@ -38,6 +38,8 @@ public protocol FileDestination: AnyObject, Destination {
     var logsDirectory: String { get }
 
     var logFilePaths: [String] { get }
+    
+    var currentLogFilePath: String? { get }
 
     func rollLogFile()
 }

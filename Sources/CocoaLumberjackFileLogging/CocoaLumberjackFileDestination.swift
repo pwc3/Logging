@@ -139,6 +139,10 @@ public class CocoaLumberjackFileDestination<Category>: FileDestination where Cat
     public var logFilePaths: [String] {
         return logger.logFileManager.sortedLogFilePaths
     }
+    
+    public var currentLogFilePath: String? {
+        logger.currentLogFileInfo?.filePath
+    }
 
     public func rollLogFile() {
         logger.rollLogFile(withCompletion: nil)
