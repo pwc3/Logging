@@ -63,6 +63,10 @@ public class LoggingService<Category>
         }
     }
 
+    public func logger(for category: Category) -> Logger<Category> {
+        return loggers[category]!
+    }
+
     public subscript(_ category: Category) -> Logger<Category> {
         get {
             return loggers[category]!
