@@ -60,6 +60,7 @@ class LogFileListViewController: UITableViewController {
 
     private func showSpinner(in parentView: UIView) {
         let overlay = UIView(frame: parentView.bounds)
+        self.spinner = overlay
 
         overlay.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         overlay.backgroundColor = UIColor.clear
