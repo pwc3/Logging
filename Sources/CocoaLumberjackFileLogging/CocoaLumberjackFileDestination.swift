@@ -31,8 +31,9 @@ public class CocoaLumberjackFileDestination<Category>: FileDestination where Cat
 
     private let logger: DDFileLogger
 
-    public init(formatter: CocoaLumberjackLogFormatter<Category> = CocoaLumberjackLogFormatter()) {
+    public init(createNewLogFile: Bool = false, formatter: CocoaLumberjackLogFormatter<Category> = CocoaLumberjackLogFormatter()) {
         logger = DDFileLogger()
+        logger.doNotReuseLogFiles = createNewLogFile
         logger.logFormatter = formatter
 
         DDLog.add(logger)
