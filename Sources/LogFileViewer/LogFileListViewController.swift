@@ -26,9 +26,9 @@
 import Logging
 import UIKit
 
-class LogFileListViewController: UITableViewController {
+class LogFileListViewController<CategoryType>: UITableViewController {
 
-    private let fileDestination: AnyFileDestination<Category>
+    private let fileDestination: AnyFileDestination<CategoryType>
     
     private let logsDirectory: URL
 
@@ -36,7 +36,7 @@ class LogFileListViewController: UITableViewController {
 
     private let reuseIdentifier = "cell"
 
-    init(fileDestination: AnyFileDestination<Category>) {
+    init(fileDestination: AnyFileDestination<CategoryType>) {
         self.fileDestination = fileDestination
         self.logsDirectory = URL(fileURLWithPath: fileDestination.logsDirectory)
         super.init(style: .plain)

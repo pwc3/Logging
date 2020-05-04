@@ -25,7 +25,7 @@
 
 import Foundation
 
-open class MessageFormatter<Category> {
+open class MessageFormatter<CategoryType> {
 
     private let threadDateFormatterKey: NSString = "Logging.MessageFormatter.dateFormatter"
 
@@ -45,7 +45,7 @@ open class MessageFormatter<Category> {
         }
     }
 
-    open func format(_ message: Message<Category>) -> String {
+    open func format(_ message: Message<CategoryType>) -> String {
         return message.message
     }
 }

@@ -25,15 +25,17 @@
 
 import Foundation
 
-public class NSLogDestination<Category>: Destination where Category: Hashable & CaseIterable & RawRepresentable, Category.RawValue == String {
+public class NSLogDestination<CategoryType>: Destination
+    where CategoryType: Hashable & CaseIterable & RawRepresentable,
+          CategoryType.RawValue == String {
 
-    let formatter: MessageFormatter<Category>
+    let formatter: MessageFormatter<CategoryType>
 
-    public init(formatter: MessageFormatter<Category> = DefaultMessageFormatter(includeTimestamp: false, includeCategory: true)) {
+    public init(formatter: MessageFormatter<CategoryType> = DefaultMessageFormatter(includeTimestamp: false, includeCategory: true)) {
         self.formatter = formatter
     }
 
-    public func log(_ message: Message<Category>) {
+    public func log(_ message: Message<CategoryType>) {
         NSLog("%@", formatter.format(message))
     }
 }

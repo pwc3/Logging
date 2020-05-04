@@ -27,7 +27,9 @@ import CocoaLumberjackSwift
 import Foundation
 import Logging
 
-open class CocoaLumberjackLogFormatter<Category>: NSObject, DDLogFormatter where Category: CaseIterable & Hashable & RawRepresentable, Category.RawValue == String {
+open class CocoaLumberjackLogFormatter<CategoryType>: NSObject, DDLogFormatter
+    where CategoryType: CaseIterable & Hashable & RawRepresentable,
+          CategoryType.RawValue == String {
 
     private let threadDateFormatterKey: NSString = "Logging.FileMessageFormatter.dateFormatter"
 
@@ -68,7 +70,7 @@ open class CocoaLumberjackLogFormatter<Category>: NSObject, DDLogFormatter where
             logLevel = nil
         }
 
-        let context = Category.at(index: message.context)
+        let context = CategoryType.at(index: message.context)
 
         var components = [String]()
         logLevel.map { components.append("[\($0)]") }

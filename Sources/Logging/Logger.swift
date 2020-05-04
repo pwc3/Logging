@@ -25,17 +25,17 @@
 
 import Foundation
 
-public class Logger<Category> where Category: CaseIterable & Hashable & RawRepresentable, Category.RawValue == String {
+public class Logger<CategoryType> where CategoryType: CaseIterable & Hashable & RawRepresentable, CategoryType.RawValue == String {
 
-    internal unowned let parent: LoggingService<Category>
+    internal unowned let parent: LoggingService<CategoryType>
 
-    public let category: Category
+    public let category: CategoryType
 
     public var isEnabled = true
     
     public var minimumLevel: Level = .verbose
 
-    init(parent: LoggingService<Category>, category: Category) {
+    init(parent: LoggingService<CategoryType>, category: CategoryType) {
         self.parent = parent
         self.category = category
     }

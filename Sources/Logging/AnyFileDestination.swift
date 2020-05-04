@@ -25,7 +25,7 @@
 
 import Foundation
 
-public class AnyFileDestination<Category>: AnyDestination<Category>, FileDestination {
+public class AnyFileDestination<CategoryType>: AnyDestination<CategoryType>, FileDestination {
 
     private let getMaximumFileSize: () -> UInt64
     private let setMaximumFileSize: (UInt64) -> Void
@@ -47,7 +47,9 @@ public class AnyFileDestination<Category>: AnyDestination<Category>, FileDestina
 
     private let _rollLogFile: () -> Void
 
-    public init<D>(fileDestination: D) where D: FileDestination, D.Category == Category {
+    public init<DestinationType>(fileDestination: DestinationType)
+        where DestinationType: FileDestination, DestinationType.CategoryType == CategoryType {
+
         getMaximumFileSize = { fileDestination.maximumFileSize }
         setMaximumFileSize = { fileDestination.maximumFileSize = $0 }
 

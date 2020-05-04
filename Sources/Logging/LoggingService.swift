@@ -25,35 +25,35 @@
 
 import Foundation
 
-public class LoggingService<Category>
-    where Category: Hashable & CaseIterable & RawRepresentable,
-    Category.RawValue == String {
+public class LoggingService<CategoryType>
+    where CategoryType: Hashable & CaseIterable & RawRepresentable,
+          CategoryType.RawValue == String {
 
-    private var loggers: [Category: Logger<Category>]!
+    private var loggers: [CategoryType: Logger<CategoryType>]!
 
-    public private(set) var destinations: [AnyDestination<Category>] = []
+    public private(set) var destinations: [AnyDestination<CategoryType>] = []
 
-    public var fileDestinations: [AnyFileDestination<Category>] {
+    public var fileDestinations: [AnyFileDestination<CategoryType>] {
         return destinations.compactMap {
-            $0 as? AnyFileDestination<Category>
+            $0 as? AnyFileDestination<CategoryType>
         }
     }
 
     public init() {
         self.loggers = {
-            var d = [Category: Logger<Category>]()
-            for c in Category.allCases {
+            var d = [CategoryType: Logger<CategoryType>]()
+            for c in CategoryType.allCases {
                 d[c] = Logger(parent: self, category: c)
             }
             return d
         }()
     }
 
-    public func add<DestinationType>(destination: DestinationType) where DestinationType: Destination, DestinationType.Category == Category {
+    public func add<DestinationType>(destination: DestinationType) where DestinationType: Destination, DestinationType.CategoryType == CategoryType {
         destinations.append(AnyDestination(destination: destination))
     }
 
-    public func add<DestinationType>(fileDestination: DestinationType) where DestinationType: FileDestination, DestinationType.Category == Category {
+    public func add<DestinationType>(fileDestination: DestinationType) where DestinationType: FileDestination, DestinationType.CategoryType == CategoryType {
         destinations.append(AnyFileDestination(fileDestination: fileDestination))
     }
 
@@ -63,17 +63,17 @@ public class LoggingService<Category>
         }
     }
 
-    internal func log(_ message: Message<Category>) {
+    internal func log(_ message: Message<CategoryType>) {
         destinations.forEach {
             $0.log(message)
         }
     }
 
-    public func logger(for category: Category) -> Logger<Category> {
+    public func logger(for category: CategoryType) -> Logger<CategoryType> {
         return loggers[category]!
     }
 
-    public subscript(_ category: Category) -> Logger<Category> {
+    public subscript(_ category: CategoryType) -> Logger<CategoryType> {
         get {
             return loggers[category]!
         }

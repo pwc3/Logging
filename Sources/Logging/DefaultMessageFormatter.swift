@@ -25,7 +25,8 @@
 
 import Foundation
 
-public class DefaultMessageFormatter<Category>: MessageFormatter<Category> where Category: Hashable & CaseIterable & RawRepresentable, Category.RawValue == String {
+public class DefaultMessageFormatter<CategoryType>: MessageFormatter<CategoryType>
+    where CategoryType: Hashable & CaseIterable & RawRepresentable, CategoryType.RawValue == String {
 
     public let includeTimestamp: Bool
 
@@ -36,7 +37,7 @@ public class DefaultMessageFormatter<Category>: MessageFormatter<Category> where
         self.includeCategory = includeCategory
     }
 
-    public override func format(_ message: Message<Category>) -> String {
+    public override func format(_ message: Message<CategoryType>) -> String {
         let components: [String?] = [
             "[\(message.level)]",
             includeCategory

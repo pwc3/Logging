@@ -27,7 +27,7 @@ import Foundation
 
 public protocol Destination {
 
-    associatedtype Category
+    associatedtype CategoryType
 
-    func log(_ message: Message<Category>)
+    func log(_ message: Message<CategoryType>)
 }

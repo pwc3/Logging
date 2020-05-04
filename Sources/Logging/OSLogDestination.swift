@@ -26,25 +26,27 @@
 import Foundation
 import os
 
-public class OSLogDestination<Category>: Destination where Category: Hashable & CaseIterable & RawRepresentable, Category.RawValue == String {
+public class OSLogDestination<CategoryType>: Destination
+    where CategoryType: Hashable & CaseIterable & RawRepresentable,
+          CategoryType.RawValue == String {
 
-    let formatter: MessageFormatter<Category>
+    let formatter: MessageFormatter<CategoryType>
 
-    private let loggers: [Category: OSLog]
+    private let loggers: [CategoryType: OSLog]
 
     public init(subsystem: String,
-                formatter: MessageFormatter<Category> = DefaultMessageFormatter(includeTimestamp: false, includeCategory: false)) {
+                formatter: MessageFormatter<CategoryType> = DefaultMessageFormatter(includeTimestamp: false, includeCategory: false)) {
 
         self.formatter = formatter
 
-        var loggers = [Category: OSLog]()
-        for category in Category.allCases {
+        var loggers = [CategoryType: OSLog]()
+        for category in CategoryType.allCases {
             loggers[category] = OSLog(subsystem: subsystem, category: category.rawValue)
         }
         self.loggers = loggers
     }
 
-    public func log(_ message: Message<Category>) {
+    public func log(_ message: Message<CategoryType>) {
         let formatted = formatter.format(message)
         let logger: OSLog! = loggers[message.category]
         os_log("%{public}@", log: logger, type: osLogType(from: message.level), formatted)

@@ -26,7 +26,7 @@
 import Logging
 import UIKit
 
-public func LogFileViewer(fileDestination: AnyFileDestination<Category>) -> UIViewController {
+public func LogFileViewer<C>(fileDestination: AnyFileDestination<C>) -> UIViewController {
     let vc = LogFileListViewController(fileDestination: fileDestination)
     let nc = UINavigationController(rootViewController: vc)
     return nc

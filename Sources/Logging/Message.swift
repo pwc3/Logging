@@ -25,7 +25,7 @@
 
 import Foundation
 
-public struct Message<Category> {
+public struct Message<CategoryType> {
 
     public var timestamp: Date
 
@@ -33,7 +33,7 @@ public struct Message<Category> {
 
     public var level: Level
 
-    public var category: Category
+    public var category: CategoryType
 
     public var file: StaticString
 

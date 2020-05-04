@@ -27,11 +27,11 @@ import CocoaLumberjackSwift
 import Foundation
 import Logging
 
-public class CocoaLumberjackFileDestination<Category>: FileDestination where Category: Hashable & CaseIterable & RawRepresentable, Category.RawValue == String {
+public class CocoaLumberjackFileDestination<CategoryType>: FileDestination where CategoryType: Hashable & CaseIterable & RawRepresentable, CategoryType.RawValue == String {
 
     private let logger: DDFileLogger
 
-    public init(createNewLogFile: Bool = false, formatter: CocoaLumberjackLogFormatter<Category> = CocoaLumberjackLogFormatter()) {
+    public init(createNewLogFile: Bool = false, formatter: CocoaLumberjackLogFormatter<CategoryType> = CocoaLumberjackLogFormatter()) {
         logger = DDFileLogger()
         logger.doNotReuseLogFiles = createNewLogFile
         logger.logFormatter = formatter
@@ -39,7 +39,7 @@ public class CocoaLumberjackFileDestination<Category>: FileDestination where Cat
         DDLog.add(logger)
     }
 
-    public func log(_ message: Message<Category>) {
+    public func log(_ message: Message<CategoryType>) {
         _DDLogMessage(message.message,
                       level: ddLogLevel(from: message.level),
                       flag: ddLogFlag(from: message.level),

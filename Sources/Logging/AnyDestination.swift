@@ -25,15 +25,17 @@
 
 import Foundation
 
-public class AnyDestination<Category>: Destination {
+public class AnyDestination<CategoryType>: Destination {
 
-    private let _log: (Message<Category>) -> Void
+    private let _log: (Message<CategoryType>) -> Void
 
-    public init<D>(destination: D) where D: Destination, D.Category == Category {
+    public init<DestinationType>(destination: DestinationType)
+        where DestinationType: Destination, DestinationType.CategoryType == CategoryType {
+
         _log = destination.log
     }
 
-    public func log(_ message: Message<Category>) {
+    public func log(_ message: Message<CategoryType>) {
         _log(message)
     }
 }
