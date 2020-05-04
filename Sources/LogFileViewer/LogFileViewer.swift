@@ -23,10 +23,11 @@
 //  DEALINGS IN THE SOFTWARE.
 //
 
+import Logging
 import UIKit
 
-public func LogFileViewer(logsDirectory: String) -> UIViewController {
-    let vc = LogFileListViewController(logsDirectory: URL(fileURLWithPath: logsDirectory))
+public func LogFileViewer(fileDestination: AnyFileDestination<Category>) -> UIViewController {
+    let vc = LogFileListViewController(fileDestination: fileDestination)
     let nc = UINavigationController(rootViewController: vc)
     return nc
 }

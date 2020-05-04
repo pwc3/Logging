@@ -25,7 +25,7 @@
 
 import Foundation
 
-class AnyFileDestination<Category>: AnyDestination<Category>, FileDestination {
+public class AnyFileDestination<Category>: AnyDestination<Category>, FileDestination {
 
     private let getMaximumFileSize: () -> UInt64
     private let setMaximumFileSize: (UInt64) -> Void
@@ -47,7 +47,7 @@ class AnyFileDestination<Category>: AnyDestination<Category>, FileDestination {
 
     private let _rollLogFile: () -> Void
 
-    init<D>(fileDestination: D) where D: FileDestination, D.Category == Category {
+    public init<D>(fileDestination: D) where D: FileDestination, D.Category == Category {
         getMaximumFileSize = { fileDestination.maximumFileSize }
         setMaximumFileSize = { fileDestination.maximumFileSize = $0 }
 
@@ -70,39 +70,39 @@ class AnyFileDestination<Category>: AnyDestination<Category>, FileDestination {
         super.init(destination: fileDestination)
     }
 
-    var maximumFileSize: UInt64 {
+    public var maximumFileSize: UInt64 {
         get { return getMaximumFileSize() }
         set { setMaximumFileSize(newValue) }
     }
 
-    var rollingFrequency: TimeInterval {
+    public var rollingFrequency: TimeInterval {
         get { return getRollingFrequency() }
         set { setRollingFrequency(newValue) }
     }
 
-    var maximumNumberOfLogFiles: UInt {
+    public var maximumNumberOfLogFiles: UInt {
         get { return getMaximumNumberOfLogFiles() }
         set { setMaximumNumberOfLogFiles(newValue) }
     }
 
-    var logFilesDiskQuota: UInt64 {
+    public var logFilesDiskQuota: UInt64 {
         get { return getLogFilesDiskQuota() }
         set { setLogFilesDiskQuota(newValue) }
     }
 
-    var logsDirectory: String {
+    public var logsDirectory: String {
         return getLogsDirectory()
     }
 
-    var logFilePaths: [String] {
+    public var logFilePaths: [String] {
         return getLogFilePaths()
     }
     
-    var currentLogFilePath: String? {
+    public var currentLogFilePath: String? {
         return getCurrentLogFilePath()
     }
 
-    func rollLogFile() {
+    public func rollLogFile() {
         _rollLogFile()
     }
 }

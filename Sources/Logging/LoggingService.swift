@@ -31,7 +31,13 @@ public class LoggingService<Category>
 
     private var loggers: [Category: Logger<Category>]!
 
-    private(set) var destinations: [AnyDestination<Category>] = []
+    public private(set) var destinations: [AnyDestination<Category>] = []
+
+    public var fileDestinations: [AnyFileDestination<Category>] {
+        return destinations.compactMap {
+            $0 as? AnyFileDestination<Category>
+        }
+    }
 
     public init() {
         self.loggers = {

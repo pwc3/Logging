@@ -23,18 +23,22 @@
 //  DEALINGS IN THE SOFTWARE.
 //
 
+import Logging
 import UIKit
 
 class LogFileListViewController: UITableViewController {
+
+    private let fileDestination: AnyFileDestination<Category>
     
     private let logsDirectory: URL
 
     private var logFiles: [URL] = []
 
     private let reuseIdentifier = "cell"
-    
-    init(logsDirectory: URL) {
-        self.logsDirectory = logsDirectory
+
+    init(fileDestination: AnyFileDestination<Category>) {
+        self.fileDestination = fileDestination
+        self.logsDirectory = URL(fileURLWithPath: fileDestination.logsDirectory)
         super.init(style: .plain)
     }
     
