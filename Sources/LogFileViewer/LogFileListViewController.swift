@@ -172,6 +172,52 @@ class LogFileListViewController: UITableViewController {
         }
     }
 
+    override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        let url = logFiles[indexPath.row]
+        let currentLogFileUrl = fileDestination.currentLogFilePath.map { URL(fileURLWithPath: $0) }
+
+        guard url != currentLogFileUrl else {
+            return nil
+        }
+
+        let action = UITableViewRowAction(style: .default, title: "Delete") { [weak self] (action, indexPath) in
+            self?.deleteLogFile(url, at: indexPath)
+        }
+
+        return [action]
+    }
+
+    private func deleteLogFile(_ url: URL, at indexPath: IndexPath) {
+        navigationController.map { showSpinner(in: $0.view) }
+        deleteLogFile(at: url) { [weak self] result in
+            switch result {
+            case .success:
+                self?.tableView.deleteRows(at: [indexPath], with: .automatic)
+
+            case .failure(let error):
+                self?.show(error)
+            }
+        }
+    }
+
+    private func deleteLogFile(at url: URL, completion: @escaping (Result<Void, Error>) -> Void) {
+        DispatchQueue.global(qos: .userInitiated).async {
+            let result: Result<Void, Error>
+
+            do {
+                try FileManager.default.removeItem(at: url)
+                result = .success(())
+            }
+            catch {
+                result = .failure(error)
+            }
+
+            DispatchQueue.main.async {
+                completion(result)
+            }
+        }
+    }
+
     private func showLogFileContents(_ result: Result<String, Error>, from url: URL) {
         switch result {
         case .success(let contents):
@@ -181,8 +227,13 @@ class LogFileListViewController: UITableViewController {
         case .failure(let error):
             let alert = UIAlertController(title: title, message: error.localizedDescription, preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: .default))
-
             present(alert, animated: true)
         }
+    }
+
+    private func show(_ error: Error) {
+        let alert = UIAlertController(title: NSLocalizedString("Error", comment: "Error"), message: error.localizedDescription, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: .default))
+        present(alert, animated: true)
     }
 }
