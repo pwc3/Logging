@@ -103,38 +103,8 @@ class LogFileListViewController<CategoryType>: UITableViewController {
     }
 
     private func reload() {
-        navigationController.map { showSpinner(in: $0.view) }
-
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            let urls = self?.loadLogFileURLs() ?? []
-
-            DispatchQueue.main.async {
-                self?.hideSpinner()
-
-                self?.logFiles = urls
-                self?.tableView.reloadData()
-            }
-        }
-    }
-
-    private func loadLogFileURLs() -> [URL]? {
-        do {
-            let files = try FileManager.default.contentsOfDirectory(
-                at: logsDirectory,
-                includingPropertiesForKeys: [.creationDateKey],
-                options: [.skipsSubdirectoryDescendants, .skipsPackageDescendants])
-
-            return try files.sorted(by: { (u1, u2) -> Bool in
-                let d1 = try u1.resourceValues(forKeys: [.creationDateKey]).creationDate ?? Date.distantPast
-                let d2 = try u2.resourceValues(forKeys: [.creationDateKey]).creationDate ?? Date.distantPast
-
-                return d2 < d1
-            })
-        }
-        catch {
-            NSLog("Error loading log file paths: \(error)")
-            return nil
-        }
+        logFiles = fileDestination.logFilePaths.map { URL(fileURLWithPath: $0) }
+        tableView.reloadData()
     }
 
     // MARK: - Table view data source
@@ -190,12 +160,19 @@ class LogFileListViewController<CategoryType>: UITableViewController {
     private func deleteLogFile(_ url: URL, at indexPath: IndexPath) {
         navigationController.map { showSpinner(in: $0.view) }
         deleteLogFile(at: url) { [weak self] result in
+            self?.hideSpinner()
+
+            guard let sself = self else {
+                return
+            }
+
             switch result {
             case .success:
-                self?.tableView.deleteRows(at: [indexPath], with: .automatic)
+                sself.logFiles = sself.fileDestination.logFilePaths.map { URL(fileURLWithPath: $0) }
+                sself.tableView.deleteRows(at: [indexPath], with: .automatic)
 
             case .failure(let error):
-                self?.show(error)
+                sself.show(error)
             }
         }
     }
