@@ -26,6 +26,11 @@
 import Logging
 import UIKit
 
+/// Creates a new log file viewer.
+///
+/// Note that the log file viewer must be contained in a navigation controller. One can be created automatically here, or you can embed it in your own:
+/// - If `embedInNavigationController` is `true`, returns a `UINavigationController` suitable for modal presentation.
+/// - If `embedInNavigationController` is `false`, the caller is responsible for embedding the returned view controller in a `UINavigationController`.
 public func LogFileViewer<C>(fileDestination: AnyFileDestination<C>, embedInNavigationController: Bool = true) -> UIViewController {
     let vc = LogFileListViewController(fileDestination: fileDestination)
     return embedInNavigationController
