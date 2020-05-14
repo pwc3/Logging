@@ -30,6 +30,7 @@ let package = Package(
     name: "Logging",
     platforms: [
         .iOS(.v12),
+        .macOS(.v10_12)
     ],
     products: [
         .library(
