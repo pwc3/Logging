@@ -25,12 +25,17 @@
 
 import Foundation
 
+/// This extension lets us find the index of an `CaseIterable` enum value. This is needed to convert between a `Context` enum and a `DDLogMessage` context integer.
+///
+/// There are two force-unwraps here enforcing the assumption that the index of a `CaseIterable` is an `Int`.
 internal extension CaseIterable where Self.AllCases.Element: Equatable {
 
+    /// Returns the enum value at the specified index.
     static func at(index: Int) -> Self {
         return allCases[index as! Self.AllCases.Index]
     }
 
+    /// Returns the index of this enum value.
     var index: Int {
         return Self.allCases.firstIndex(of: self) as! Int
     }
