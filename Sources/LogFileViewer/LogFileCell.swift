@@ -23,6 +23,8 @@
 //  DEALINGS IN THE SOFTWARE.
 //
 
+#if os(iOS)
+
 import UIKit
 
 class LogFileCell: UITableViewCell {
@@ -53,3 +55,5 @@ class LogFileCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 }
+
+#endif

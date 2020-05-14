@@ -23,6 +23,8 @@
 //  DEALINGS IN THE SOFTWARE.
 //
 
+#if os(iOS)
+
 import Logging
 import UIKit
 
@@ -214,3 +216,5 @@ class LogFileListViewController<CategoryType>: UITableViewController {
         present(alert, animated: true)
     }
 }
+
+#endif

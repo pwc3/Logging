@@ -23,6 +23,8 @@
 //  DEALINGS IN THE SOFTWARE.
 //
 
+#if os(iOS)
+
 import WebKit
 import UIKit
 
@@ -78,3 +80,5 @@ class LogFileViewController: UIViewController {
         present(vc, animated: true)
     }
 }
+
+#endif

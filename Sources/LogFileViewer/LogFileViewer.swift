@@ -23,6 +23,8 @@
 //  DEALINGS IN THE SOFTWARE.
 //
 
+#if os(iOS)
+
 import Logging
 import UIKit
 
@@ -37,3 +39,5 @@ public func LogFileViewer<C>(fileDestination: AnyFileDestination<C>, embedInNavi
         ? UINavigationController(rootViewController: vc)
         : vc
 }
+
+#endif
