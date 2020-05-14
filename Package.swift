@@ -29,7 +29,7 @@ import PackageDescription
 let package = Package(
     name: "Logging",
     platforms: [
-        .iOS(.v12),
+        .iOS(.v11),
         .macOS(.v10_12)
     ],
     products: [
