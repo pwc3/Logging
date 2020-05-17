@@ -53,7 +53,7 @@ Select _File_ > _Add Package Dependency..._ in Xcode. Add this repo's URL when p
 
 ## Basic Logging
 
-You app should create a single instance of the `LoggingService` class. I usually make this a global variable called `log`.
+Your application should create a single instance of the `LoggingService` class. Usually this a global variable called `log`.
 
 You must add at least one `Destination` to the `LoggingService` instance. Without this, no log messages will actually appear.
 
@@ -64,9 +64,9 @@ The core `Logging` library provides two destinations:
 
 A protocol called `FileDestination` is provided to support file logging. No implementation of this is provided in the core `Logging` library. An implementation based on the [CocoaLumberjack][cocoa-lumberjack] library is provided in the `CocoaLumberjackFileLogging` library contained in this package. This is kept in a separate package so that using the core library does not impose any additional library dependencies.
 
-In the most-simple case, you would just add a single destination, say `NSLogDestination`. However, you can add additional destinations to enable you to log to a file, for example. Since `Destination` and `FileDestination` are protocols, you can define your own destinations to integrate with other logging packages.
+In the simplest case, you would just add a single destination, say `NSLogDestination`. However, you can add additional destinations to enable you to log to a file, for example. Since `Destination` and `FileDestination` are protocols, you can define your own destinations to integrate with other logging packages.
 
-The `LoggingService` class has a generic type parameter. This corresponds to the log category. You need to provide this as a String enum that is `CaseIterable`. Logging categories allow you to categorize your log messages. It's up to you to decide what and how many categories you use. The choice is largely dependent upon the application. For example, you may have an `api` category for remote API calls, a `ui` category for user-interface code, an `app` category for application-lifecycle messages. You can then control the verbosity (log level) of each category independently. The log output is formatted in such a way that it is easy to filter specific categories, allowing you to focus on a specific category you are working on or troubleshooting.
+The `LoggingService` class has a generic type parameter. This corresponds to the log category. You need to provide this type as a String enum that is `CaseIterable`. Logging categories allow you to categorize your log messages. It's up to you to decide what and how many categories you use. The choice is largely dependent upon the application. For example, you may have an `api` category for remote API calls, a `ui` category for user-interface code, an `app` category for application-lifecycle messages. You can then control the verbosity (log level) of each category independently. The log output is formatted in such a way that it is easy to filter specific categories, allowing you to focus on a specific category you are working on or troubleshooting.
 
 ### Setup
 

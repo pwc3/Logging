@@ -25,21 +25,54 @@
 
 import Foundation
 
+/// `Logger` objects are created by the `LoggingService`. One `Logger` is created for each value in the generic `CategoryType` String enum used to create the `LoggingService`.
+///
+/// Each `Logger` maintains an `unowned` reference back to the parent `LoggingService`.
+///
+/// The application selects a `Logger` using the `LoggingService.subscript` operator or the `Loggingservice.logger(for:)` function. It then sends log messages to the `Logger` using the following functions:
+///
+/// - `Logger.verbose(_:file:function:line:)`
+/// - `Logger.debug(_:file:function:line:)`
+/// - `Logger.info(_:file:function:line:)`
+/// - `Logger.warn(_:file:function:line:)`
+/// - `Logger.error(_:file:function:line:)`
+///
+/// These functions each correspond to a `Level` indicating the severity of the message. The `Logger` filters out messages that do not meet the `minimumLevel` set on the `Logger`.
+///
+/// Each `Logger` can be enabled or disabled via the `isEnabled` flag. Disabled `Logger` objects drop all log messages.
+///
+/// The `Logger` routes all filtered log messages back to its parent `LoggingService` for them to be sent to the added destinations.
+///
+/// Note that the message string passed to the logging functions is captured as a `@autoclosure` parameter. This closure will only be evaluated if the message is not filtered out (i.e., it will only be evaluated if the `level` is greater than or equal to the `minimumLevel` and `isEnabled` is `true`).
 public class Logger<CategoryType> where CategoryType: CaseIterable & Hashable & RawRepresentable, CategoryType.RawValue == String {
 
+    /// Unowned parent reference. Used to dispatch filtered `Message` values to `Destination` objects.
     internal unowned let parent: LoggingService<CategoryType>
 
+    /// The category of this `Logger`.
     public let category: CategoryType
 
+    /// Flag indicating whether this `Logger` is enabled. If this flag is `false`, all log messages will be dropped.
     public var isEnabled = true
-    
+
+    /// The minimum level for messages to be emitted. If the level of a message is less than the `minimumLevel`, it is dropped.
     public var minimumLevel: Level = .verbose
 
-    init(parent: LoggingService<CategoryType>, category: CategoryType) {
+    /// Creates a new `Logger` with the specified parent and category.
+    ///
+    /// - parameter parent: The parent logging service. The `Logger` maintains an unowned reference to this object.
+    /// - parameter category: The category for this `Logger`.
+    internal init(parent: LoggingService<CategoryType>, category: CategoryType) {
         self.parent = parent
         self.category = category
     }
 
+    /// Emits a `verbose` level log message. This message will be logged by the parent `LoggingService` if this `Logger` is enabled (i.e., `isEnabled` is `true`) and the `minimumLevel` is greater than or equal to `.verbose`. Otherwise this message will be dropped.
+    ///
+    /// - parameter message: The message to be logged.
+    /// - parameter file: The filename of the call site. Defaults to `#file`.
+    /// - parameter function: The function containing the call site. Defaults to `#function`.
+    /// - parameter line: The line number of the call site. Defaults to `#line`.
     public func verbose(_ message: @autoclosure () -> String,
                         file: StaticString = #file,
                         function: StaticString = #function,
@@ -47,6 +80,12 @@ public class Logger<CategoryType> where CategoryType: CaseIterable & Hashable & 
         log(message: message, level: .verbose, file: file, function: function, line: line)
     }
 
+    /// Emits a `debug` level log message. This message will be logged by the parent `LoggingService` if this `Logger` is enabled (i.e., `isEnabled` is `true`) and the `minimumLevel` is greater than or equal to `.debug`. Otherwise this message will be dropped.
+    ///
+    /// - parameter message: The message to be logged.
+    /// - parameter file: The filename of the call site. Defaults to `#file`.
+    /// - parameter function: The function containing the call site. Defaults to `#function`.
+    /// - parameter line: The line number of the call site. Defaults to `#line`.
     public func debug(_ message: @autoclosure () -> String,
                       file: StaticString = #file,
                       function: StaticString = #function,
@@ -54,6 +93,12 @@ public class Logger<CategoryType> where CategoryType: CaseIterable & Hashable & 
         log(message: message, level: .debug, file: file, function: function, line: line)
     }
 
+    /// Emits an `info` level log message. This message will be logged by the parent `LoggingService` if this `Logger` is enabled (i.e., `isEnabled` is `true`) and the `minimumLevel` is greater than or equal to `.info`. Otherwise this message will be dropped.
+    ///
+    /// - parameter message: The message to be logged.
+    /// - parameter file: The filename of the call site. Defaults to `#file`.
+    /// - parameter function: The function containing the call site. Defaults to `#function`.
+    /// - parameter line: The line number of the call site. Defaults to `#line`.
     public func info(_ message: @autoclosure () -> String,
                      file: StaticString = #file,
                      function: StaticString = #function,
@@ -61,6 +106,12 @@ public class Logger<CategoryType> where CategoryType: CaseIterable & Hashable & 
         log(message: message, level: .info, file: file, function: function, line: line)
     }
 
+    /// Emits a `warning` level log message. This message will be logged by the parent `LoggingService` if this `Logger` is enabled (i.e., `isEnabled` is `true`) and the `minimumLevel` is greater than or equal to `.warning`. Otherwise this message will be dropped.
+    ///
+    /// - parameter message: The message to be logged.
+    /// - parameter file: The filename of the call site. Defaults to `#file`.
+    /// - parameter function: The function containing the call site. Defaults to `#function`.
+    /// - parameter line: The line number of the call site. Defaults to `#line`.
     public func warn(_ message: @autoclosure () -> String,
                      file: StaticString = #file,
                      function: StaticString = #function,
@@ -68,7 +119,12 @@ public class Logger<CategoryType> where CategoryType: CaseIterable & Hashable & 
         log(message: message, level: .warning, file: file, function: function, line: line)
     }
 
-
+    /// Emits an `error` level log message. This message will be logged by the parent `LoggingService` if this `Logger` is enabled (i.e., `isEnabled` is `true`) and the `minimumLevel` is greater than or equal to `.error`. Otherwise this message will be dropped.
+    ///
+    /// - parameter message: The message to be logged.
+    /// - parameter file: The filename of the call site. Defaults to `#file`.
+    /// - parameter function: The function containing the call site. Defaults to `#function`.
+    /// - parameter line: The line number of the call site. Defaults to `#line`.
     public func error(_ message: @autoclosure () -> String,
                       file: StaticString = #file,
                       function: StaticString = #function,
@@ -76,6 +132,7 @@ public class Logger<CategoryType> where CategoryType: CaseIterable & Hashable & 
         log(message: message, level: .error, file: file, function: function, line: line)
     }
 
+    /// Filters out log messages that do not meet the minimum level or if `isEnabled` is `false`. Otherwise, constructs a `Message` and passes it back to the parent for dispatch to the added destinations.
     private func log(message: () -> String,
                      level: Level,
                      file: StaticString,
