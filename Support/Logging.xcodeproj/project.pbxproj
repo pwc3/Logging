@@ -78,7 +78,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"${PROJECT_DIR}\"\ncd ..\nmint run pwc3/DocSpell swift-package --name Logging\n";
+			shellScript = "cd \"${PROJECT_DIR}\"\ncd ..\nmint run pwc3/DocSpell swift-package --name Logging --whitelist \"Support/Whitelist.plist\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
