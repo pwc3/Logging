@@ -33,24 +33,7 @@ import Foundation
 ///
 /// The `LoggingService` class has a generic type parameter `CategoryType`. This corresponds to the log category. You need to provide this type as a String enum that is `CaseIterable`. Logging categories allow you to categorize your log messages. It's up to you to decide what and how many categories you use. The choice is largely dependent upon the application. For example, you may have an `api` category for remote API calls, a `ui` category for user-interface code, an `app` category for application-lifecycle messages. You can then control the verbosity (log level) of each category independently. The log output is formatted in such a way that it is easy to filter specific categories, allowing you to focus on a specific category you are working on or troubleshooting.
 ///
-/// The `CategoryType` is used to construct `Logger` objects, one per value in the enum. These values are accessible via the `subscript` operator and the `logger(for:)` function. The application logs messages via these `Logger` objects. For example:
-///
-/// ```
-/// import Logging
-///
-/// enum Category: String, CaseIterable {
-///     case app
-///     case ui
-/// }
-///
-/// let log: LoggingService<Category> = {
-///     let service = LoggingService<Category>()
-///     service.add(destination: NSLogDestination())
-/// }()
-///
-/// log[.app].debug("This is a debug message sent to the .app category")
-/// log.logger(for: .ui).info("This is an info message sent to the .ui category")
-/// ```
+/// The `CategoryType` is used to construct `Logger` objects, one per value in the enum. These values are accessible via the `subscript` operator and the `logger(for:)` function. The application logs messages via these `Logger` objects.
 ///
 /// Each `Logger` object has a `minimumLevel`. Log messages with a `level` less than the `minimumLevel` shall be filtered out. This `minimumLevel` can be set independently on each `Logger`, or all at once via the `setMinimumLevel(_:)` function.
 public class LoggingService<CategoryType>
@@ -104,7 +87,7 @@ public class LoggingService<CategoryType>
         }
     }
 
-    /// Internal function called by `Logger` objects to dispatch log messages to the registered destinations. The calling `Logger` object shall have already filtered out messages that do not meet the minimum log level.
+    /// Internal function that dispatches log messages to the registered destinations. The calling `Logger` object shall have already filtered out messages that do not meet the minimum log level.
     ///
     /// - parameter message: The log message to pass to the registered destinations.
     internal func log(_ message: Message<CategoryType>) {
