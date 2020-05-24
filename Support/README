@@ -1,0 +1,5 @@
+This directory contains an Xcode project that:
+
+- Includes the Logging package via the root directory of the repo. This adds the package to the project.
+- A single aggregate build target to run the spell checker.
+

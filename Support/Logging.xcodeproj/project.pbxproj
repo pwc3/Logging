@@ -1,0 +1,138 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXAggregateTarget section */
+		C5E62027247A2E1E0086DE4F /* SpellCheck */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = C5E62028247A2E1E0086DE4F /* Build configuration list for PBXAggregateTarget "SpellCheck" */;
+			buildPhases = (
+				C5E6202B247A2E240086DE4F /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = SpellCheck;
+			productName = SpellCheck;
+		};
+/* End PBXAggregateTarget section */
+
+/* Begin PBXFileReference section */
+		C536857A247A2E9F00EF878D /* Logging */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Logging; path = ..; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		C5E6201F247A2DCC0086DE4F = {
+			isa = PBXGroup;
+			children = (
+				C536857A247A2E9F00EF878D /* Logging */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXProject section */
+		C5E62020247A2DCC0086DE4F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1150;
+				TargetAttributes = {
+					C5E62027247A2E1E0086DE4F = {
+						CreatedOnToolsVersion = 11.5;
+					};
+				};
+			};
+			buildConfigurationList = C5E62023247A2DCC0086DE4F /* Build configuration list for PBXProject "Logging" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = C5E6201F247A2DCC0086DE4F;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				C5E62027247A2E1E0086DE4F /* SpellCheck */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		C5E6202B247A2E240086DE4F /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd \"${PROJECT_DIR}\"\ncd ..\nmint run pwc3/DocSpell swift-package --name Logging\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		C5E62024247A2DCC0086DE4F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		C5E62025247A2DCC0086DE4F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Release;
+		};
+		C5E62029247A2E1E0086DE4F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		C5E6202A247A2E1E0086DE4F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C5E62023247A2DCC0086DE4F /* Build configuration list for PBXProject "Logging" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C5E62024247A2DCC0086DE4F /* Debug */,
+				C5E62025247A2DCC0086DE4F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C5E62028247A2E1E0086DE4F /* Build configuration list for PBXAggregateTarget "SpellCheck" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C5E62029247A2E1E0086DE4F /* Debug */,
+				C5E6202A247A2E1E0086DE4F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = C5E62020247A2DCC0086DE4F /* Project object */;
+}
